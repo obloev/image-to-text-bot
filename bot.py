@@ -39,7 +39,7 @@ async def handle_docs_photo(message: types.Message):
         text = pytesseract.image_to_string(Image.open(image), lang="eng")
         await message.reply(text)
     else:
-        await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe())
+        await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
 
 
 @dp.callback_query_handler(text='check')
