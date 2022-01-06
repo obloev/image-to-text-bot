@@ -25,13 +25,12 @@ def subscribe_markup():
 async def send_welcome(message: types.Message):
     name = message.chat.first_name
     await message.reply(f'🤖 Hello {name}\! \nWelcome to *Image To Text Bot*\.\n'
-                        'Just send me a picture and I will find the text in it', parse_mode='MarkdownV2')
+                        '🖼 Just send me a picture and I will find the text in it', parse_mode='MarkdownV2')
 
 
 @dp.message_handler(content_types=['photo', 'document'])
 async def handle_docs_photo(message: types.Message):
     user_id = message.chat.id
-    print(message)
     user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
     if user_channel_status.status not in ['left', 'kicked']:
         try:
@@ -40,15 +39,16 @@ async def handle_docs_photo(message: types.Message):
             elif message.document.mime_type.startswith('image'):
                 await message.document.download('photo.jpg')
             else:
-                await message.reply('Please, send an image file')
-            wait_message = await message.answer('Please wait ...')
+                await message.reply('🖼 Please, send an image file')
+                return
+            wait_message = await message.answer('⏳ Please wait ...')
             image = 'photo.jpg'
             text = pytesseract.image_to_string(Image.open(image), lang="eng")
             await message.reply(text)
             await bot.delete_message(user_id, wait_message.message_id)
         except exceptions.BadRequest:
             await bot.delete_message(user_id, wait_message.message_id)
-            await message.reply('No text found')
+            await message.reply('🚫 No text found')
     else:
         await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
 
@@ -59,7 +59,7 @@ async def check_subscription(callback_query: types.CallbackQuery):
     user = callback_query.message.chat.first_name
     user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
     if user_channel_status.status in ['left', 'kicked']:
-        await bot.answer_callback_query(callback_query.id, "You aren't a member of the channel", show_alert=True)
+        await bot.answer_callback_query(callback_query.id, "🚫 You aren't a member of the channel", show_alert=True)
     else:
         await bot.delete_message(user_id, callback_query.message.message_id)
         await bot.send_message(admin_id, f'[{user}](tg://user?id={user_id}) joined the channel', parse_mode='MarkdownV2')
