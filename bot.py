@@ -35,7 +35,10 @@ async def handle_docs_photo(message: types.Message):
     user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
     if user_channel_status.status not in ['left', 'kicked']:
         try:
-            await message.photo[-1].download('photo.jpg')
+            if 'photo' in message:
+                await message.photo[-1].download('photo.jpg')
+            else:
+                await message.document.download('photo.jpg')
             wait_message = await message.answer('Please wait ...')
             image = 'photo.jpg'
             text = pytesseract.image_to_string(Image.open(image), lang="eng")
