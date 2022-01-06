@@ -8,7 +8,7 @@ API_TOKEN = '5082150067:AAEF9eHOGQT1_iG6k_oCG_zGqkhFHGk3FAs'
 channel = '@ok7_bots'
 channel_join_link = 'https://t.me/+K4HZ7LZq4SY2NzEy'
 admin_id = 880280670
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
