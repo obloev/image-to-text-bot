@@ -22,13 +22,13 @@ def subscribe_markup():
 
 
 @dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
+async def send_welcome(message: types.Message)
     name = message.chat.first_name
     await message.reply(f'🤖 Hello {name}\! \nWelcome to *Image To Text Bot*\.\n'
                         'Just send me a picture and I will find the text in it', parse_mode='MarkdownV2')
 
 
-@dp.message_handler(content_types=['photo'])
+@dp.message_handler(content_types=['photo', 'file'])
 async def handle_docs_photo(message: types.Message):
     user_id = message.chat.id
     user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
@@ -38,6 +38,7 @@ async def handle_docs_photo(message: types.Message):
             wait_message = await message.answer('Please wait ...')
             image = 'photo.jpg'
             text = pytesseract.image_to_string(Image.open(image), lang="eng")
+            await bot.delete_message(user_id, wait_message.message_id)
             await message.reply(text)
         except exceptions.BadRequest:
             await bot.delete_message(user_id, wait_message.message_id)
