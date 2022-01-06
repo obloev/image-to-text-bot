@@ -40,8 +40,8 @@ async def handle_docs_photo(message: types.Message):
             text = pytesseract.image_to_string(Image.open(image), lang="eng")
             await message.reply(text)
         except exceptions.BadRequest:
+            await bot.delete_message(user_id, wait_message.message_id)
             await message.reply('No text found')
-            print(wait_message)
     else:
         await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
 
