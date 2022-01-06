@@ -1,6 +1,6 @@
 import logging
 from aiogram import Bot, Dispatcher, types
-from aiogram.utils import executor
+from aiogram.utils import executor, exceptions
 from PIL import Image
 import pytesseract
 
@@ -34,10 +34,13 @@ async def handle_docs_photo(message: types.Message):
     user_id = message.chat.id
     user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
     if user_channel_status.status not in ['left', 'kicked']:
-        await message.photo[-1].download('photo.jpg')
-        image = 'photo.jpg'
-        text = pytesseract.image_to_string(Image.open(image), lang="eng")
-        await message.reply(text)
+        try:
+            await message.photo[-1].download('photo.jpg')
+            image = 'photo.jpg'
+            text = pytesseract.image_to_string(Image.open(image), lang="eng")
+            await message.reply(text)
+        except exceptions.BadRequest:
+            await message.reply('Not found text')
     else:
         await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
 
