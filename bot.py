@@ -28,9 +28,10 @@ async def send_welcome(message: types.Message):
                         'Just send me a picture and I will find the text in it', parse_mode='MarkdownV2')
 
 
-@dp.message_handler(content_types=['photo', 'file'])
+@dp.message_handler(content_types=['photo', 'document'])
 async def handle_docs_photo(message: types.Message):
     user_id = message.chat.id
+    print(message)
     user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
     if user_channel_status.status not in ['left', 'kicked']:
         try:
@@ -49,7 +50,7 @@ async def handle_docs_photo(message: types.Message):
 
 @dp.message_handler(content_types=types.ContentType.all())
 async def handle_doc3s_photo(message: types.Message):
-    await message.reply(message)
+    await message.reply(message.document.mime_type)
 
 
 @dp.callback_query_handler(text='check')
