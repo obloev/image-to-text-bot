@@ -22,7 +22,7 @@ def subscribe_markup():
 
 
 @dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message)
+async def send_welcome(message: types.Message):
     name = message.chat.first_name
     await message.reply(f'🤖 Hello {name}\! \nWelcome to *Image To Text Bot*\.\n'
                         'Just send me a picture and I will find the text in it', parse_mode='MarkdownV2')
