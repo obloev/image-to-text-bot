@@ -24,7 +24,7 @@ def subscribe_markup():
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
     name = message.chat.first_name
-    await message.reply(f'🤖 Hello {name}\! \nWelcome to *Image To Text Bot*\.\n '
+    await message.reply(f'🤖 Hello {name}\! \nWelcome to *Image To Text Bot*\.\n'
                         'Just send me a picture and I will find the text in it', parse_mode='MarkdownV2')
 
 
@@ -35,12 +35,13 @@ async def handle_docs_photo(message: types.Message):
     if user_channel_status.status not in ['left', 'kicked']:
         try:
             await message.photo[-1].download('photo.jpg')
-            await message.answer('Please await ...')
+            wait_message = await message.answer('Please wait ...')
             image = 'photo.jpg'
             text = pytesseract.image_to_string(Image.open(image), lang="eng")
             await message.reply(text)
         except exceptions.BadRequest:
             await message.reply('No text found')
+            print(wait_message)
     else:
         await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
 
