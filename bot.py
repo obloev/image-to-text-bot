@@ -25,7 +25,7 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(content_types=['photo'])
 async def handle_docs_photo(message: types.Message):
-    await message.photo[-1].download('photo/photo.jpg')
+    await message.photo[-1].download('photo.jpg')
     image = 'photo.jpg'
     text = pytesseract.image_to_string(Image.open(image), lang="eng")
     await message.reply(text)
