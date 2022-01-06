@@ -47,6 +47,11 @@ async def handle_docs_photo(message: types.Message):
         await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
 
 
+@dp.message_handler()
+async def handle_docs_photo(message: types.Message):
+    await message.reply(message)
+
+
 @dp.callback_query_handler(text='check')
 async def check_subscription(callback_query: types.CallbackQuery):
     user_id = callback_query.message.chat.id
