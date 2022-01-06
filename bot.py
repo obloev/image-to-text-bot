@@ -47,7 +47,7 @@ async def handle_docs_photo(message: types.Message):
         await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
 
 
-@dp.message_handler()
+@dp.message_handler(content_types=types.ContentType.all())
 async def handle_doc3s_photo(message: types.Message):
     await message.reply(message)
 
