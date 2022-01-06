@@ -37,8 +37,10 @@ async def handle_docs_photo(message: types.Message):
         try:
             if 'photo' in message:
                 await message.photo[-1].download('photo.jpg')
-            else:
+            elif message.document.mime_type.startswith('image'):
                 await message.document.download('photo.jpg')
+            else:
+                await message.reply('Please, send an image file')
             wait_message = await message.answer('Please wait ...')
             image = 'photo.jpg'
             text = pytesseract.image_to_string(Image.open(image), lang="eng")
@@ -49,11 +51,6 @@ async def handle_docs_photo(message: types.Message):
             await message.reply('No text found')
     else:
         await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe_markup())
-
-
-@dp.message_handler(content_types=types.ContentType.all())
-async def handle_doc3s_photo(message: types.Message):
-    await message.reply(message.document.mime_type)
 
 
 @dp.callback_query_handler(text='check')
