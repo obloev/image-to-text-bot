@@ -38,8 +38,8 @@ async def handle_docs_photo(message: types.Message):
             wait_message = await message.answer('Please wait ...')
             image = 'photo.jpg'
             text = pytesseract.image_to_string(Image.open(image), lang="eng")
-            await bot.delete_message(user_id, wait_message.message_id)
             await message.reply(text)
+            await bot.delete_message(user_id, wait_message.message_id)
         except exceptions.BadRequest:
             await bot.delete_message(user_id, wait_message.message_id)
             await message.reply('No text found')
@@ -48,7 +48,7 @@ async def handle_docs_photo(message: types.Message):
 
 
 @dp.message_handler()
-async def handle_docs_photo(message: types.Message):
+async def handle_doc3s_photo(message: types.Message):
     await message.reply(message)
 
 
