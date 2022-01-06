@@ -15,6 +15,12 @@ dp = Dispatcher(bot)
 logging.basicConfig(level=logging.INFO)
 
 
+def subscribe_markup():
+    url = types.InlineKeyboardButton('🔗 View channel', url=channel_join_link)
+    check = types.InlineKeyboardButton('✅ Confirmation', callback_data='check')
+    return types.InlineKeyboardMarkup(resize_keyboard=True, row_width=12).row(url).row(check)
+
+
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
     name = message.chat.first_name
@@ -25,10 +31,28 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(content_types=['photo'])
 async def handle_docs_photo(message: types.Message):
-    await message.photo[-1].download('photo.jpg')
-    image = 'photo.jpg'
-    text = pytesseract.image_to_string(Image.open(image), lang="eng")
-    await message.reply(text)
+    user_id = message.chat.id
+    user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
+    if user_channel_status.status not in ['left', 'kicked']:
+        await message.photo[-1].download('photo.jpg')
+        image = 'photo.jpg'
+        text = pytesseract.image_to_string(Image.open(image), lang="eng")
+        await message.reply(text)
+    else:
+        await message.answer('🤖 Please, subscribe to the channel below to use the bot', reply_markup=subscribe())
+
+
+@dp.callback_query_handler(text='check')
+async def check_subscription(callback_query: types.CallbackQuery):
+    user_id = callback_query.message.chat.id
+    user = callback_query.message.chat.first_name
+    user_channel_status = await bot.get_chat_member(chat_id=channel, user_id=user_id)
+    if user_channel_status.status in ['left', 'kicked']:
+        await bot.answer_callback_query(callback_query.id, "You aren't a member of the channel", show_alert=True)
+    else:
+        await bot.delete_message(user_id, callback_query.message.message_id)
+        await bot.send_message(admin_id, f'[{user}](tg://user?id={user_id}) joined the channel', parse_mode='MarkdownV2')
+        await callback_query.message.answer('✅ OK. Now you can now use the bot')
 
 
 if __name__ == '__main__':
